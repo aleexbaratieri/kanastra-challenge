@@ -1,0 +1,74 @@
+version: "3.8"
+services:
+  api:
+    container_name: api
+    build: 
+      context: .
+      dockerfile: configs/php/Dockerfile
+    restart: on-failure
+    volumes:
+      - ./api:/var/www
+    working_dir: /var/www
+    networks:
+      - my-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - '8000:80'
+    volumes:
+      - ./api:/var/www
+      - ./configs/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - my-network
+
+  db:
+    container_name: db
+    image: mysql:latest
+    volumes:
+      - ./storage/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-kanastra}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-secret}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
+      MYSQL_USER: ${MYSQL_USERNAME:-username}
+      TZ: Brazil/East
+    networks:
+      - my-network
+
+  redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+
+  supervisor:
+    build:
+      context: .
+      dockerfile: ./configs/supervisor/Dockerfile
+    container_name: supervisor
+    volumes:
+      - ./api:/var/www
+    networks:
+      - my-network
+
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: configs/node/Dockerfile
+      target: app
+    ports:
+      - '80:8888'
+    volumes:
+      - ./app:/app
+    networks:
+      - my-network
+
+networks:
+  my-network:
