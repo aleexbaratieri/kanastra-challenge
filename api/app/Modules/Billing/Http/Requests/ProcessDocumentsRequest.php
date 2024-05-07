@@ -3,6 +3,7 @@
 namespace App\Modules\Billing\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 use Illuminate\Validation\Rules\File;
 
@@ -28,5 +29,12 @@ class ProcessDocumentsRequest extends FormRequest
             'description' => ['nullable', 'max:255'],
             'document' => ['required', File::types(['csv'])->max('512mb')]
         ];
+    }
+
+    protected function failedValidation($validator)
+    {
+        throw ValidationException::withMessages([
+            'message' => $validator->messages()->first(),
+        ]);
     }
 }
