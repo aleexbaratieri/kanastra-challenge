@@ -1,5 +1,5 @@
 ```sh
-git clone git@github.com:aleexbaratieri/kanastra-chalange.git
+git clone git@github.com:aleexbaratieri/kanastra-challenge.git
 
 #create envs
 cp .env.example .env
