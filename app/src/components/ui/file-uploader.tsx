@@ -1,19 +1,26 @@
+import React from "react";
+
 type FileUploaderProps = {
-  file: File;
+  file: File | undefined;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
-const FileUploader = ({ file }: FileUploaderProps) => {
+
+const FileUploader = ({file, onChange }: FileUploaderProps) => {
 
   return (
-    <div className = "flex flex-col gap-6">
+    <div className = "flex flex-col gap-6 border-none mt-6">
       <div>
-        <label htmlFor="file" className="sr-only">
-          Choose a file
-        </label>
-        <input id="file" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" />
+        <input 
+          className="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" 
+          id="small_size" 
+          type="file" 
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" 
+          onChange={onChange}
+        />
       </div>
       {file && (
         <section>
-          <p className="pb-6">File details:</p>
+          <p className="pb-6">Detalhes de arquivo:</p>
           <ul>
             <li>Name: {file.name}</li>
             <li>Type: {file.type}</li>
@@ -21,8 +28,6 @@ const FileUploader = ({ file }: FileUploaderProps) => {
           </ul>
         </section>
       )}
-
-      {file && <button className="rounded-lg bg-green-800 text-white px-4 py-2 border-none font-semibold">Upload the file</button>}
     </div>
   );
 };
