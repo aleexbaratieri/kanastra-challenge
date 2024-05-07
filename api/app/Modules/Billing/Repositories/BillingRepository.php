@@ -17,7 +17,7 @@ class BillingRepository implements BillingRepositoryInterface
      */
     public function getLastBillings(): array
     {
-        return $this->entity->limit(10)->get()->toArray();
+        return $this->entity->get()->toArray();
     }
 
     public function createBilling(ProccessDocumentInput $billing): Billing
